@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hogwarts Sorting Ceremony</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'EB Garamond', serif;
+      background: radial-gradient(ellipse at top, #1a1528 0%, #0c0a12 50%, #050407 100%);
+      color: #e6dbca;
+      min-height: 100vh;
+    }
+    .cinzel-dec {
+      font-family: 'Cinzel Decorative', serif;
+    }
+    .cinzel {
+      font-family: 'Cinzel', serif;
+    }
+    .parchment-panel {
+      background: linear-gradient(145deg, rgba(28, 22, 38, 0.95), rgba(18, 14, 25, 0.98));
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      box-shadow: 0 0 50px -10px rgba(212, 175, 55, 0.2), inset 0 0 40px rgba(0, 0, 0, 0.8);
+    }
+    .option-btn {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      background: rgba(36, 28, 48, 0.6);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .option-btn:hover {
+      background: rgba(64, 46, 82, 0.7);
+      border-color: rgba(234, 194, 83, 0.65);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px -3px rgba(212, 175, 55, 0.25);
+    }
+    .fade-step {
+      animation: magicAppear 0.35s ease-out forwards;
+    }
+    @keyframes magicAppear {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="flex flex-col justify-between selection:bg-amber-900 selection:text-amber-100">
+
+  <!-- Castle Star Ambience Topbar -->
+  <header class="py-6 px-4 text-center border-b border-amber-500/20 bg-black/40 backdrop-blur-sm">
+    <div class="flex items-center justify-center gap-3">
+      <span class="text-amber-400 text-xl opacity-80">✦</span>
+      <h1 class="cinzel-dec text-2xl sm:text-3xl text-amber-200 tracking-wider">Hogwarts Sorting Ceremony</h1>
+      <span class="text-amber-400 text-xl opacity-80">✦</span>
+    </div>
+    <p class="text-xs sm:text-sm text-amber-300/60 cinzel tracking-widest uppercase mt-1">
+      Where Destiny Meets Disposition
+    </p>
+  </header>
+
+  <!-- Quiz Stage -->
+  <main class="flex-grow flex items-center justify-center p-4 sm:p-6 my-2">
+    <div class="w-full max-w-2xl parchment-panel rounded-2xl p-6 sm:p-10 relative">
+
+      <!-- Corner Flourishes -->
+      <div class="absolute top-3 left-3 text-amber-500/30 text-xs">╔</div>
+      <div class="absolute top-3 right-3 text-amber-500/30 text-xs">╗</div>
+      <div class="absolute bottom-3 left-3 text-amber-500/30 text-xs">╚</div>
+      <div class="absolute bottom-3 right-3 text-amber-500/30 text-xs">╝</div>
+
+      <!-- VIEW 1: INTRO -->
+      <div id="intro-card" class="text-center space-y-6 fade-step py-4">
+        <div class="w-20 h-20 mx-auto rounded-full border border-amber-400/40 flex items-center justify-center text-4xl shadow-lg bg-amber-500/10">
+          🧙
+        </div>
+        <div class="space-y-2">
+          <h2 class="cinzel text-2xl sm:text-3xl text-amber-100 font-bold">
+            The Sorting Hat Awaits
+          </h2>
+          <p class="text-slate-300 text-base sm:text-lg leading-relaxed max-w-lg mx-auto">
+            Step onto the stool. There are no transparent four-way answers here—just genuine choices, companion beasts, practical instincts, and real moral dilemmas.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-black/40 border border-amber-500/20 text-sm text-amber-200/80 max-w-md mx-auto space-y-1.5 text-left">
+          <p class="font-semibold cinzel text-amber-300 text-center mb-2">📜 Guidance Before You Begin</p>
+          <p>• Several questions have 5 or 6 choices that blend traits together.</p>
+          <p>• The Hat tracks your instinctual balance, not just a single trait.</p>
+          <p>• Answer by your true gut reaction, not what sounds noble.</p>
+        </div>
+
+        <button id="start-btn" class="cinzel px-8 py-3.5 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-100 font-bold rounded-xl border border-amber-400/50 shadow-xl tracking-wider transition-all transform active:scale-95">
+          Step Forward to be Sorted
+        </button>
+      </div>
+
+      <!-- VIEW 2: QUESTION SCREEN -->
+      <div id="quiz-card" class="hidden space-y-6">
+        <!-- Progress -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center text-xs cinzel tracking-widest text-amber-300/80">
+            <span id="question-count">Question 1 of 11</span>
+            <span id="progress-text" class="text-amber-400">9%</span>
+          </div>
+          <div class="w-full h-1.5 bg-black/60 rounded-full overflow-hidden border border-amber-500/20">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-amber-600 via-amber-400 to-amber-200 transition-all duration-300 w-[9%]"></div>
+          </div>
+        </div>
+
+        <!-- Question Prompt -->
+        <h3 id="question-text" class="text-lg sm:text-xl text-amber-100 font-semibold leading-relaxed pt-2">
+          <!-- Populated by JS -->
+        </h3>
+
+        <!-- Options Container -->
+        <div id="options-box" class="space-y-3 pt-1">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- VIEW 3: SORTING RESULT -->
+      <div id="result-card" class="hidden space-y-6 fade-step text-center py-2">
+        <div id="result-badge" class="w-24 h-24 mx-auto rounded-full flex items-center justify-center text-4xl border-2 shadow-2xl">
+          <!-- Crest -->
+        </div>
+
+        <div>
+          <span class="text-xs uppercase tracking-widest text-amber-400/80 cinzel font-bold">Your Official House</span>
+          <h2 id="result-house-title" class="cinzel-dec text-3xl sm:text-4xl font-extrabold mt-1 tracking-wide">
+            <!-- House Name -->
+          </h2>
+        </div>
+
+        <div class="bg-black/60 border border-amber-500/30 rounded-xl p-5 text-left text-sm sm:text-base leading-relaxed text-slate-200">
+          <p id="result-explanation">
+            <!-- Narrative summary -->
+          </p>
+        </div>
+
+        <!-- Complete Affinity Breakdown -->
+        <div class="space-y-3 text-left pt-2">
+          <h4 class="cinzel text-xs uppercase tracking-wider text-amber-300/70 font-semibold">House Alignment Profile</h4>
+          <div id="breakdown-list" class="space-y-2.5">
+            <!-- Bars -->
+          </div>
+        </div>
+
+        <button id="restart-btn" class="cinzel px-7 py-3 bg-slate-900 hover:bg-slate-800 border border-amber-500/40 rounded-xl text-amber-200 text-sm tracking-wider transition-all">
+          Sort Again
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="py-4 text-center text-xs text-amber-400/40 cinzel tracking-widest">
+    Hogwarts School of Witchcraft & Wizardry &bull; The Sorting
+  </footer>
+
+  <script>
+    // Nuanced Questions with 4, 5, or 6 options + compound scoring
+    const questions = [
+      {
+        question: "You may bring one animal companion to Hogwarts. Which one are you choosing to have beside you throughout the year?",
+        options: [
+          { text: "A sleek Barn Owl: alert, independent, and proud; it delivers messages flawlessly and observes everything from the rafters.", scores: { ravenclaw: 2, slytherin: 1 } },
+          { text: "A scruffy Ginger Kneazle-cat: fiercely loyal, affectionate with your trusted friends, and instantly hisses when a liar enters the room.", scores: { gryffindor: 2, hufflepuff: 1 } },
+          { text: "A chubby, placid Garden Toad: completely unbothered by castle chaos, loves resting warm inside your coat pocket while you work.", scores: { hufflepuff: 2 } },
+          { text: "A clever Crow: mischievous and fascinated by shiny objects, puzzle boxes, and unlocking forbidden latches.", scores: { ravenclaw: 2, slytherin: 2 } },
+          { text: "A small Pygmy Puff: brings constant cheer, rides on your shoulder, and softens the mood whenever someone is having a rough day.", scores: { hufflepuff: 2, gryffindor: 1 } }
+        ]
+      },
+      {
+        question: "You're in a four-person group project, and one teammate hasn't contributed a single sentence with the deadline tomorrow. What do you actually do?",
+        options: [
+          { text: "Confront them directly in the group chat: either do your designated part tonight or your name gets left off the submission.", scores: { gryffindor: 3 } },
+          { text: "Quietly stay up and finish it yourself. It sucks, but getting the grade and avoiding unnecessary drama is the priority.", scores: { hufflepuff: 2 } },
+          { text: "Restructure the remaining work so the active members do only what's required, and privately notify the professor with timestamps.", scores: { slytherin: 2, ravenclaw: 1 } },
+          { text: "Diagnose why they fell behind first—if they're overwhelmed, give them the easiest section; if they're lazy, document it calmly.", scores: { hufflepuff: 1, ravenclaw: 2 } },
+          { text: "Call an immediate emergency meeting with the whole group to redistribute work fairly so no single person carries the burden.", scores: { gryffindor: 1, hufflepuff: 2 } }
+        ]
+      },
+      {
+        question: "Exploring the castle after hours, you uncover a hidden room containing an ancient, locked cabinet. What is your immediate impulse?",
+        options: [
+          { text: "Pick the lock or cast an unlocking charm; whatever is locked away in secret must hold immense value or power.", scores: { slytherin: 3 } },
+          { text: "Inspect the runes, inscriptions, and hinges carefully first to deduce what kind of enchantment or curse is guarding it.", scores: { ravenclaw: 3 } },
+          { text: "Force it open on the spot—fortune favors the bold, and you can handle whatever emerges.", scores: { gryffindor: 3 } },
+          { text: "Make sure you have an escape route and that whoever is with you stays back safely before touching anything.", scores: { hufflepuff: 2, gryffindor: 1 } },
+          { text: "Leave it undisturbed for tonight, research its history in the library tomorrow, and return prepared.", scores: { ravenclaw: 2, hufflepuff: 1 } }
+        ]
+      },
+      {
+        question: "You're in the parking lot and realize the cashier accidentally forgot to scan a $15 item already in your bag. What's your genuine move?",
+        options: [
+          { text: "Walk straight back in and pay. Even if no one saw, leaving with it would sit sour on your conscience all afternoon.", scores: { gryffindor: 2, hufflepuff: 2 } },
+          { text: "Walk back inside primarily because the cashier's till might be short at the end of their shift, which could penalize them.", scores: { hufflepuff: 3 } },
+          { text: "Keep walking. A multi-billion-dollar retail corporation factors shrinkage into pricing; wasting 20 minutes in line is an inefficient trade.", scores: { slytherin: 3 } },
+          { text: "Debate the mechanics: return policy, line length, whether the cashier can even ring up a bag item retroactively without a manager override.", scores: { ravenclaw: 3 } },
+          { text: "Decide based on the store: if it's an independent local shop, go back immediately; if it's an impersonal megastore, keep it.", scores: { slytherin: 1, hufflepuff: 1, ravenclaw: 1 } }
+        ]
+      },
+      {
+        question: "Someone makes a cheap, unprovoked jab at your expense in front of a whole dinner table. What is your natural reaction?",
+        options: [
+          { text: "Fire back an immediate, sharp response that instantly puts them in their place before they can finish laughing.", scores: { gryffindor: 3 } },
+          { text: "Dissect the remark calmly and dryly ask: 'What did you mean by that?'—making their awkward hostility clear to everyone.", scores: { ravenclaw: 2, gryffindor: 1 } },
+          { text: "Smile coolly and laugh it off in the room, but file it away in your memory; you now know their character and will handle them strategically.", scores: { slytherin: 3 } },
+          { text: "Defuse the tension with good humor so the table doesn't get awkward, then pull them aside privately afterward to set a firm boundary.", scores: { hufflepuff: 3 } },
+          { text: "Notice who laughed and who looked uncomfortable; read the room's dynamic before deciding whether to retaliate or let them look foolish alone.", scores: { slytherin: 2, ravenclaw: 1 } }
+        ]
+      },
+      {
+        question: "Which magical artifact would you find most tempting if it were offered to you?",
+        options: [
+          { text: "The Marauder's Map: total situational awareness of where everyone is and who is with whom at all times.", scores: { slytherin: 2, ravenclaw: 1 } },
+          { text: "The Invisibility Cloak: the freedom to slip past restrictions unseen, investigate unnoticed, and protect others from harm.", scores: { gryffindor: 2, hufflepuff: 1 } },
+          { text: "A Time-Turner: the power to master double the subjects, read every text, and never run out of hours in a day.", scores: { ravenclaw: 3 } },
+          { text: "The Sword of Gryffindor: appears only when true courage is summoned, indestructible and unyielding in times of peril.", scores: { gryffindor: 3 } },
+          { text: "The Mirror of Erised (portable glass): a mirror that reveals the deepest genuine hopes and hidden motivations of anyone who gazes into it.", scores: { hufflepuff: 2, ravenclaw: 1 } },
+          { text: "The Philosopher's Stone: unlimited life and the ability to turn base metal into pure gold—unmatched leverage and security.", scores: { slytherin: 3 } }
+        ]
+      },
+      {
+        question: "What kind of person drains your patience the fastest when you have to work or live with them?",
+        options: [
+          { text: "People who talk a massive game but shrink back and make excuses the second actual pressure or conflict arrives.", scores: { gryffindor: 3 } },
+          { text: "People who act helpless, refuse to learn basic things, and expect everyone else to clean up after them.", scores: { slytherin: 2, ravenclaw: 1 } },
+          { text: "People who express loud, unshakeable opinions on complex topics they haven't spent five minutes studying.", scores: { ravenclaw: 3 } },
+          { text: "Social opportunists who treat human beings like stepping stones and drop loyal friends the minute someone 'cooler' appears.", scores: { hufflepuff: 3 } },
+          { text: "Passive-aggressive snipers who won't say what they mean to your face and prefer souring the atmosphere with subtext.", scores: { gryffindor: 2, hufflepuff: 1 } }
+        ]
+      },
+      {
+        question: "You and your companions get lost in a dark, unfamiliar forest without a compass, and the sun has just set. What role do you assume?",
+        options: [
+          { text: "Take the lead: choose the most promising path forward with confidence; keeping people moving beats freezing in place.", scores: { gryffindor: 3 } },
+          { text: "The navigator: orient the group using star patterns, slope of terrain, and wind direction before letting anyone wander.", scores: { ravenclaw: 3 } },
+          { text: "The anchor: check on everyone's morale, ensure water and warmth are distributed, and make sure nobody gets left behind in panic.", scores: { hufflepuff: 3 } },
+          { text: "The strategist: calculate emergency supplies, assess whether finding shelter beats walking blindly in the dark, and make the survival call.", scores: { slytherin: 3 } },
+          { text: "The mediator: stop people from shouting over each other and synthesize the two best ideas into a single coordinated plan.", scores: { hufflepuff: 2, ravenclaw: 1 } }
+        ]
+      },
+      {
+        question: "You find out a close friend blabbed a sensitive, embarrassing secret about you to someone else. What's your internal reaction?",
+        options: [
+          { text: "Confront them directly face-to-face and demand to know what they were thinking. No beat-around-the-bush games.", scores: { gryffindor: 3 } },
+          { text: "Quiet freeze-out. They have shown their card; you keep things cordial on the surface but revoke their access to your real life.", scores: { slytherin: 3 } },
+          { text: "Hurt and confused. You pull them aside privately to ask what happened—maybe it slipped out, or there's context you missed.", scores: { hufflepuff: 3 } },
+          { text: "Analyze their motive: was it social clumsiness, insecurity, or deliberate malice? Your reaction depends entirely on the root cause.", scores: { ravenclaw: 2, slytherin: 1 } },
+          { text: "Call them out for the betrayal, but once the air is cleared and they own it, forgive them and move forward.", scores: { gryffindor: 2, hufflepuff: 2 } }
+        ]
+      },
+      {
+        question: "Which of these compliments would feel the most deeply validating to receive?",
+        options: [
+          { text: "\"You're someone people can count on through thick and thin; you never let your people down.\"", scores: { hufflepuff: 3 } },
+          { text: "\"You always see angles, flaws, and solutions that everyone else in the room completely missed.\"", scores: { ravenclaw: 3 } },
+          { text: "\"You have real backbone. You aren't afraid of anyone and you stand up when it counts.\"", scores: { gryffindor: 3 } },
+          { text: "\"You always find a way to come out on top, no matter how bad the initial cards were.\"", scores: { slytherin: 3 } },
+          { text: "\"You make people feel safe and included without ever being a pushover.\"", scores: { hufflepuff: 2, gryffindor: 1 } }
+        ]
+      },
+      {
+        question: "After a conflict where you had to push back against someone, which thought would keep you awake at night?",
+        options: [
+          { text: "\"Did I stay too polite? I should have spoken up louder and not let them slide with that.\"", scores: { gryffindor: 3 } },
+          { text: "\"Did I come across too harsh or mean? I hope I didn't unnecessarily ruin the vibe or hurt their feelings.\"", scores: { hufflepuff: 3 } },
+          { text: "\"Did I give away too much of my position or let my emotions show too clearly?\"", scores: { slytherin: 3 } },
+          { text: "\"Did I articulate my argument poorly? The logic had a flaw I should have phrased better.\"", scores: { ravenclaw: 3 } }
+        ]
+      }
+    ];
+
+    const houseProfiles = {
+      gryffindor: {
+        name: "Gryffindor",
+        symbol: "🦁",
+        textColor: "text-red-400",
+        badgeClasses: "border-red-500/70 bg-red-950/50 text-red-300",
+        barColor: "bg-gradient-to-r from-red-700 to-amber-500",
+        explanation: "The Sorting Hat places you in Gryffindor not because of blind bravado, but because of your visceral instinct for moral agency. You value kindness and harmony, but you possess a hard line: when meanness or unfairness enters the room, you cannot stay silent. Staying passive eats at your soul far more than the temporary awkwardness of speaking up. You stand up for your people in the open, and you back your values with real backbone."
+      },
+      ravenclaw: {
+        name: "Ravenclaw",
+        symbol: "🦅",
+        textColor: "text-sky-300",
+        badgeClasses: "border-sky-500/70 bg-sky-950/50 text-sky-300",
+        barColor: "bg-gradient-to-r from-sky-700 to-cyan-400",
+        explanation: "The Sorting Hat recognizes in you a sharp, structural mind driven by curiosity and epistemic precision. Where others see loud arguments or simple heroes and villains, you notice root causes, logical premises, and hidden mechanics. You refuse to settle for shallow answers, and you are endlessly drawn to deciphering how the world actually works."
+      },
+      hufflepuff: {
+        name: "Hufflepuff",
+        symbol: "🦡",
+        textColor: "text-amber-300",
+        badgeClasses: "border-amber-500/70 bg-amber-950/50 text-amber-300",
+        barColor: "bg-gradient-to-r from-amber-600 to-yellow-400",
+        explanation: "The Sorting Hat honors your rare gift for genuine stewardship, empathy, and enduring loyalty. You are deeply invested in community and fairness, taking conscious care never to act cruel or dismissive. You hold the room together quietly and reliably, offering strength to those who need it most, without demanding the spotlight in return."
+      },
+      slytherin: {
+        name: "Slytherin",
+        symbol: "🐍",
+        textColor: "text-emerald-400",
+        badgeClasses: "border-emerald-500/70 bg-emerald-950/50 text-emerald-300",
+        barColor: "bg-gradient-to-r from-emerald-700 to-teal-400",
+        explanation: "The Sorting Hat sees your strategic instincts, sovereignty, and acute understanding of human dynamics. You play the long game, carefully protecting your inner circle and turning difficult hands into decisive advantages. You value discretion, leverage, and loyalty that must be earned—not cheap talk."
+      }
+    };
+
+    let currentIndex = 0;
+    const scores = { gryffindor: 0, ravenclaw: 0, hufflepuff: 0, slytherin: 0 };
+
+    const introCard = document.getElementById("intro-card");
+    const quizCard = document.getElementById("quiz-card");
+    const resultCard = document.getElementById("result-card");
+    const startBtn = document.getElementById("start-btn");
+    const restartBtn = document.getElementById("restart-btn");
+
+    const questionCount = document.getElementById("question-count");
+    const progressText = document.getElementById("progress-text");
+    const progressBar = document.getElementById("progress-bar");
+    const questionText = document.getElementById("question-text");
+    const optionsBox = document.getElementById("options-box");
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    startBtn.addEventListener("click", () => {
+      introCard.classList.add("hidden");
+      quizCard.classList.remove("hidden");
+      quizCard.classList.add("fade-step");
+      currentIndex = 0;
+      Object.keys(scores).forEach(key => scores[key] = 0);
+      loadQuestion();
+    });
+
+    restartBtn.addEventListener("click", () => {
+      resultCard.classList.add("hidden");
+      introCard.classList.remove("hidden");
+    });
+
+    function loadQuestion() {
+      const q = questions[currentIndex];
+      const total = questions.length;
+      const progressPercent = Math.round(((currentIndex + 1) / total) * 100);
+
+      questionCount.textContent = `Question ${currentIndex + 1} of ${total}`;
+      progressText.textContent = `${progressPercent}%`;
+      progressBar.style.width = `${progressPercent}%`;
+
+      questionText.textContent = q.question;
+      optionsBox.innerHTML = "";
+
+      // Shuffle options so houses never hold predictable positions
+      const shuffledOptions = shuffleArray(q.options);
+
+      shuffledOptions.forEach((opt, idx) => {
+        const optionBtn = document.createElement("button");
+        optionBtn.className = "w-full text-left p-3.5 sm:p-4 rounded-xl option-btn text-slate-100 text-sm sm:text-base leading-relaxed flex items-start gap-3 group";
+
+        const letterBadge = document.createElement("span");
+        letterBadge.className = "cinzel text-xs font-bold text-amber-400 group-hover:text-amber-200 mt-0.5 shrink-0";
+        letterBadge.textContent = String.fromCharCode(65 + idx) + ".";
+
+        const textSpan = document.createElement("span");
+        textSpan.className = "flex-grow";
+        textSpan.textContent = opt.text;
+
+        optionBtn.appendChild(letterBadge);
+        optionBtn.appendChild(textSpan);
+
+        optionBtn.addEventListener("click", () => {
+          // Add compound scores
+          for (const [house, pts] of Object.entries(opt.scores)) {
+            scores[house] = (scores[house] || 0) + pts;
+          }
+          currentIndex++;
+          if (currentIndex < total) {
+            loadQuestion();
+          } else {
+            showFinalResults();
+          }
+        });
+
+        optionsBox.appendChild(optionBtn);
+      });
+    }
+
+    function showFinalResults() {
+      quizCard.classList.add("hidden");
+      resultCard.classList.remove("hidden");
+
+      const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+      const topHouseKey = sorted[0][0];
+      const houseInfo = houseProfiles[topHouseKey];
+
+      const badge = document.getElementById("result-badge");
+      badge.className = `w-24 h-24 mx-auto rounded-full flex items-center justify-center text-4xl border-2 shadow-2xl ${houseInfo.badgeClasses}`;
+      badge.textContent = houseInfo.symbol;
+
+      const title = document.getElementById("result-house-title");
+      title.className = `cinzel-dec text-3xl sm:text-4xl font-extrabold mt-1 tracking-wider ${houseInfo.textColor}`;
+      title.textContent = houseInfo.name;
+
+      document.getElementById("result-explanation").textContent = houseInfo.explanation;
+
+      // Percentage Breakdown
+      const breakdownList = document.getElementById("breakdown-list");
+      breakdownList.innerHTML = "";
+
+      const totalPoints = Object.values(scores).reduce((a, b) => a + b, 0) || 1;
+
+      sorted.forEach(([houseKey, score]) => {
+        const info = houseProfiles[houseKey];
+        const pct = Math.round((score / totalPoints) * 100);
+
+        const row = document.createElement("div");
+        row.className = "space-y-1 text-xs";
+
+        row.innerHTML = `
+          <div class="flex justify-between items-center text-slate-300 font-medium">
+            <span class="cinzel text-xs text-amber-200">${info.name}</span>
+            <span class="text-amber-300/80 font-mono">${pct}%</span>
+          </div>
+          <div class="w-full h-2 bg-black/60 rounded-full overflow-hidden border border-amber-500/20">
+            <div class="h-full ${info.barColor} transition-all duration-700 ease-out" style="width: ${pct}%"></div>
+          </div>
+        `;
+
+        breakdownList.appendChild(row);
+      });
+    }
+  </script>
+</body>
+</html>
